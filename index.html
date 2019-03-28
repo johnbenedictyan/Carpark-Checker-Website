@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <!-- Personal CSS -->
+  <link rel="stylesheet" href="index.css" type="text/css" />
+
+  <title>Carpark Availability</title>
+</head>
+
+<body>
+  <div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-item nav-link" href="#">Features</a>
+          <a class="nav-item nav-link" href="#">Pricing</a>
+          <a class="nav-item nav-link disabled" href="#">Disabled</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div class="container">
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container">
+        <h1 class="display-4">Fluid jumbotron</h1>
+        <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+        <hr class="my-4">
+        <button class="btn btn-primary btn-lg" id="GetDataButton">Get Carpark Availability</button>
+      </div>
+    </div>
+
+    <nav class="navbar navbar-dark bg-dark">
+      <form class="form-inline address-search-form-container">
+        <input class="form-control mr-sm-2 address-search-input-box" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
+      <span><button class="btn btn-outline-success my-2 my-sm-0" type="submit">My Location</button></span>
+    </nav>
+    <div class="row" id="map">
+
+    </div>
+    <a id="downloadAnchorElem" style="display:none"></a>
+
+  </div>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  <!-- Axios JS -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+  <!-- Google Maps API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2bsXz1Zk50EQsbHR2-LuIbqKUioqNYAk&callback=initMap" async defer></script>
+
+  <!-- Personal Javascript -->
+  <script>
+    // Google Maps Initialisation //
+    /* global google */
+    var map;
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 1.3521, lng: 103.8198 },
+        zoom: 11
+      });
+    }
+
+    /* global axios */
+    //The CarparkCondition Function returns the condition of the carpark based on the ratio of its available lots to total lots.
+    //The colour returned will be the colour of the carpark's marker on google maps.
+    function CarparkCondition(AL, TL) {
+      parseFloat(AL);
+      parseFloat(TL);
+      let ratio = AL / TL;
+      if (ratio >= 0.7) {
+        return "green";
+      }
+      else if (ratio <= 0.35) {
+        return "red";
+      }
+      else {
+        return "yellow";
+      }
+    }
+
+    //GetCarparkAvailability function makes the ajax call to retrieve one dataset
+    async function GetCarparkAvailability() {
+      const res = await axios.get("https://api.data.gov.sg/v1/transport/carpark-availability")
+        .then(response => [response.data.items[0].carpark_data, response.data.items[0].timestamp]).catch(error => error);
+      return res;
+    }
+
+    //GetCarparkInformation function makes the ajax call to retrieve the other dataset
+    async function GetCarparkInformation() {
+      const res = await axios.get("https://data.gov.sg/api/action/datastore_search", { params: { resource_id: "139a3035-e624-4f56-b63f-89ae28d4ae4c", limit: "1983" } })
+        .then(response => response.data.result.records).catch(error => error);
+      return res;
+    }
+
+    //Coordinate Convertor function makes the ajax call to convert the SVY21 format to the WGS84 format that the google maps api requires.
+    async function CoordinateConvertor(coordinates) {
+      const res = await axios.get("https://developers.onemap.sg/commonapi/convert/3414to4326", { params: coordinates })
+        .then(response => response).catch(error => error);
+      return res;
+    }
+
+    //ProcessData function processes both dataset and combines them together to form a final dataset. It also adds the condition into this final dataset.
+    async function ProcessData() {
+      //Assigned variables to the raw data coming in.
+      let RawCarparkAvailability = await GetCarparkAvailability();
+      let CarparkInformationDataset = await GetCarparkInformation();
+
+      //Separating the time stamp from the carpark availability.
+      let TimeStamp = RawCarparkAvailability[1];
+      let CarparkData = RawCarparkAvailability[0];
+
+      //Extracting the different layered information into a single array of objects called CarparkAvailabilityDataset.
+      let CarparkAvailabilityDataset = [];
+      let CDL = CarparkData.length;
+      for (let i = 0; i < CDL; i++) {
+        let obj = {
+          CarparkNumber: CarparkData[i].carpark_number,
+          AvailableLots: CarparkData[i].carpark_info[0].lots_available,
+          TotalLots: CarparkData[i].carpark_info[0].total_lots
+        };
+        CarparkAvailabilityDataset.push(obj);
+      }
+
+      //Makes a copy of the CarparkAvailabilityDatset for debugging purposes.
+      let FinalDataset = CarparkAvailabilityDataset.slice(0);
+
+      let FDL = FinalDataset.length;
+      let CIDL = CarparkInformationDataset.length;
+
+      //These nested for loops match the carpark numbers of both dataset and merges them into a single array of objects, the FinalDataset.
+      for (let j = 0; j < FDL; j++) {
+        for (let k = 0; k < CIDL; k++) {
+          if (FinalDataset[j].CarparkNumber == CarparkInformationDataset[k].car_park_no) {
+            FinalDataset[j].Address = CarparkInformationDataset[k].address;
+            FinalDataset[j].CarparkBasement = CarparkInformationDataset[k].car_park_basement;
+            FinalDataset[j].CarparkDecks = CarparkInformationDataset[k].car_park_decks;
+            FinalDataset[j].CarparkType = CarparkInformationDataset[k].car_park_type;
+            FinalDataset[j].FreeParking = CarparkInformationDataset[k].free_parking;
+            FinalDataset[j].GantryHeight = CarparkInformationDataset[k].gantry_height;
+            FinalDataset[j].NightParking = CarparkInformationDataset[k].night_parking;
+            FinalDataset[j].ShortTermParking = CarparkInformationDataset[k].short_term_parking;
+            FinalDataset[j].ParkingSystemType = CarparkInformationDataset[k].type_of_parking_system;
+            FinalDataset[j].X_Coordinates = CarparkInformationDataset[k].x_coord;
+            FinalDataset[j].Y_Coordinates = CarparkInformationDataset[k].y_coord;
+          }
+        }
+      }
+
+      //This for loop goes through the Final Data set, isolates the X & Y Coordinates and passes it through the Coordinate Convertor function.
+      //It then appends the lat and lng with the response from the api so that it can be pass through to the Google Maps API.
+      for (let x = 0; x < FDL; x++) {
+        let coordinates = {
+          X: FinalDataset[x].X_Coordinates,
+          Y: FinalDataset[x].Y_Coordinates
+        };
+        let response = await CoordinateConvertor(coordinates);
+        let data = (response.data);
+        FinalDataset[x].lat = data.latitude;
+        FinalDataset[x].lng = data.longitude;
+        delete FinalDataset[x].X_Coordinates;
+        delete FinalDataset[x].Y_Coordinates;
+      }
+
+      //This for loop goes through the FinalDataset and adds in the condition by calling the CarparkCondition function.
+      for (let z = 0; z < FDL; z++) {
+        let AL = FinalDataset[z].AvailableLots;
+        let TL = FinalDataset[z].TotalLots;
+        let condition = CarparkCondition(AL, TL);
+        FinalDataset[z].Condition = condition;
+      }
+
+      //The function returns an array of the Time Stamp and the Final Dataset array.
+      return [TimeStamp, FinalDataset];
+    }
+
+    function DownloadData() {
+      ProcessData().then(function(value) {
+        let x = value[1];
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(x));
+        var dlAnchorElem = document.getElementById('downloadAnchorElem');
+        dlAnchorElem.setAttribute("href", dataStr);
+        dlAnchorElem.setAttribute("download", "CarparkInfo.json");
+        dlAnchorElem.click();
+      });
+    }
+
+    function GetFinalCarparkInfo() {
+      async function asd() {
+        const res = await axios.get("carparkinfo.json")
+          .then(response => response).catch(error => error);
+        return res;
+      }
+      asd().then(function(value) {
+        return value;
+      });
+
+    }
+    /* global $ */
+    $(function() {
+      $("#GetDataButton").click(function() {
+        console.log(GetFinalCarparkInfo());
+      });
+    });
+  </script>
+</body>
+
+</html>
+</body>
+
+</html>
