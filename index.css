@@ -12,7 +12,7 @@
         height: 100%;
         margin: 0;
         padding: 0;
-        background-image: url("background-image-3.jpg");
+        background-image: url("./Assets/background-image.jpg");
         background-repeat:no-repeat;
         background-attachment: fixed;
         background-position: center;
