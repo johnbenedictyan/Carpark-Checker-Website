@@ -33,7 +33,7 @@
     </nav>
   </div>
   <div class="container">
-    <div class="jumbotron jumbotron-fluid">
+    <div class="jumbotron jumbotron-fluid home-page-jumbotron">
       <div class="container">
         <h1 class="display-4">SG CARPARKS</h1>
         <p class="lead">Find an empty lot now!</p>
@@ -45,9 +45,9 @@
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="GetDataButton">Get Carpark Availability</button>
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="UseYourLocationButton">My Location</button>
         </span>
-      <form class="form-inline address-search-form-container">
-        <input class="form-control mr-sm-2 address-search-input-box" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      <form class="form-inline address-search-form-container home-page-search-form">
+        <input class="form-control mr-sm-2 address-search-input-box home-page-search-box" id="SearchBox" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" id="SearchButton" type="submit">Search</button>
       </form>
 
     </nav>
@@ -76,6 +76,7 @@
   <script>
     // Google Maps Initialisation //
     var map;
+    let service = null;
     /* global google */
 
     function initMap() {
@@ -83,6 +84,8 @@
         center: { lat: 1.3521, lng: 103.8198 },
         zoom: 11
       });
+
+      service = new google.maps.places.PlacesService(map);
     }
 
     /* global $ */
@@ -100,10 +103,24 @@
       $("#UseYourLocationButton").click(function() {
         DisplayCarparksOnLocation();
       });
+
+      $("#SearchButton").click(function(event) {
+        event.preventDefault();
+        let x = $("#SearchBox").val();
+        console.log(x);
+        console.log(typeof x);
+        $("#SearchBox").val("");
+        let request = {
+          query: x,
+          fields: ["name", "geometry"]
+        };
+        console.log(request);
+        PlaceSearch(request);
+      });
     });
   </script>
   <!-- Google Maps API -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2bsXz1Zk50EQsbHR2-LuIbqKUioqNYAk&callback=initMap" async defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2bsXz1Zk50EQsbHR2-LuIbqKUioqNYAk&libraries=places&callback=initMap" async defer></script>
 </body>
 
 </html>

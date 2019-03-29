@@ -296,4 +296,55 @@
         GoogleMapSetPositionByCoordinateObject(SGCOORDINATEOBJECT);
         GoogleMapSetZoom(11);
     }
+    let PlaceSearchPosition;
+
+    function PlaceSearch(request) {
+        service.findPlaceFromQuery(request, function(results, status) {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                // for (var i = 0; i < results.length; i++) {
+                //     createMarker(results[i]);
+                // }
+                if (PlaceSearchPosition == undefined) {
+                    PlaceSearchPosition = results[0].geometry.location;
+                    SearchPositionMaker(map, PlaceSearchPosition);
+                    GoogleMapSetPositionByCoordinateObject(PlaceSearchPosition);
+                    GoogleMapSetZoom(14);
+                    if (Displayed == false) {
+                        DisplayCarparks();
+                    }
+                }
+                else {
+                    PlaceSearchPosition.setMap(null);
+                    PlaceSearchPosition = results[0].geometry.location;
+                    SearchPositionMaker(map, PlaceSearchPosition);
+                    GoogleMapSetPositionByCoordinateObject(PlaceSearchPosition);
+                    GoogleMapSetZoom(14);
+                    if (Displayed == false) {
+                        DisplayCarparks();
+                    }
+                }
+            }
+        });
+
+    }
+
+    let SearchPosition;
+
+    function SearchPositionMaker(map, pos) {
+        if (SearchPosition == undefined) {
+            SearchPosition = new google.maps.Marker({
+                map: map,
+                animation: google.maps.Animation.DROP,
+                position: pos
+            });
+        }
+        else {
+            SearchPosition.setMap(null);
+            SearchPosition = new google.maps.Marker({
+                map: map,
+                animation: google.maps.Animation.DROP,
+                position: pos
+            });
+        }
+    }
     

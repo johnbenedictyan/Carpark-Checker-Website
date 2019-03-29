@@ -2,7 +2,7 @@
        * element that contains the map. */
 
     #map {
-        height: 500px;
+        height: 65vh;
     }
 
     /* Optional: Makes the sample page fill the window. */
@@ -19,4 +19,16 @@
         background-size:cover;
     }
     
+    .home-page-jumbotron{
+        padding: 2rem 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .home-page-search-form{
+        width:50%;
+    }
+    
+    .home-page-search-box{
+        width:80% !important;
+    }
     
