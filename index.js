@@ -128,7 +128,7 @@
     }
 
     /* global google */
-    function AddMarker(location, map, condition, label) {
+    function AddMarker(location, map, condition, label, CarparkContent) {
         if (location.lat != undefined & location.lng != undefined) {
             if (condition == "red") {
                 let marker = new google.maps.Marker({
@@ -136,6 +136,12 @@
                     map: map,
                     label: label,
                     icon: "./Assets/final-red-circle.png"
+                });
+                marker.addListener('click', function() {
+                    let infowindow = new google.maps.InfoWindow({
+                        content: CarparkContent,
+                    });
+                     infowindow.open(map, marker);
                 });
                 return marker;
 
@@ -147,6 +153,12 @@
                     label: label,
                     icon: "./Assets/final-yellow-circle.png"
                 });
+                marker.addListener('click', function() {
+                    let infowindow = new google.maps.InfoWindow({
+                        content: CarparkContent,
+                    });
+                     infowindow.open(map, marker);
+                });
                 return marker;
 
             }
@@ -156,6 +168,12 @@
                     map: map,
                     label: label,
                     icon: "./Assets/final-green-circle.png"
+                });
+                marker.addListener('click', function() {
+                    let infowindow = new google.maps.InfoWindow({
+                        content: CarparkContent,
+                    });
+                     infowindow.open(map, marker);
                 });
                 return marker;
             }
@@ -182,8 +200,6 @@
     }
 
     function GeoLocater() {
-        infoWindow = new google.maps.InfoWindow;
-
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
@@ -193,8 +209,6 @@
                 };
 
                 infoWindow.setPosition(pos);
-                // infoWindow.setContent('Location found.');
-                // infoWindow.open(map);
                 map.setCenter(pos);
                 map.setZoom(14);
                 CurrentLocationMaker(map, pos);
@@ -216,17 +230,22 @@
         }
     }
     var Displayed = false;
+    let markers = [];
+    let infoWindowarray = [];
 
     function DisplayCarparks() {
         RetrieveCarparkInfoJSON().then(function(value) {
             let x = value;
-            let markers = [];
             for (let i = 0; i < x.length; i++) {
                 if (x[i].lat == undefined || x[i].lng == undefined) {
                     delete x[i];
                 }
                 else {
-                    let y = AddMarker({ lat: x[i].lat, lng: x[i].lng }, map, x[i].Condition, x[i].AvailableLots);
+                    let contentString = "<div>" + "<h5>" + "Address: " + "</h5>" + "<p>" + x[i].Address + "</p>" + "</div>" +
+                        "<div>" + "<h5>" + "Free Parking: " + "</h5>" + "<p>" + x[i].FreeParking + "</p>" + "</div>" +
+                        "<div>" + "<h5>" + "Night Parking: " + "</h5>" + "<p>" + x[i].NightParking + "</p>" + "</div>" +
+                        "<div>" + "<h5>" + "Short Term Parking: " + "</h5>" + "<p>" + x[i].ShortTermParking + "</p>" + "</div>";
+                    let y = AddMarker({ lat: x[i].lat, lng: x[i].lng }, map, x[i].Condition, x[i].AvailableLots, contentString);
                     markers.push(y);
                 }
             }
@@ -238,7 +257,7 @@
     async function DisplayCarparksOnLocation() {
         if (Displayed == false) {
             let x = await DisplayCarparks();
-            let y = await resolveAfterXSeconds(3);
+            let y = await resolveAfterXSeconds(4);
             GeoLocater();
         }
         else if (Displayed == true) {
@@ -301,9 +320,6 @@
     function PlaceSearch(request) {
         service.findPlaceFromQuery(request, function(results, status) {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
-                // for (var i = 0; i < results.length; i++) {
-                //     createMarker(results[i]);
-                // }
                 if (PlaceSearchPosition == undefined) {
                     PlaceSearchPosition = results[0].geometry.location;
                     SearchPositionMaker(map, PlaceSearchPosition);
