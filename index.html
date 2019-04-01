@@ -11,6 +11,9 @@
 
   <!-- Personal CSS -->
   <link rel="stylesheet" href="index.css" type="text/css" />
+  
+  <!-- Font Awesome CSS -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
   <title>Carpark Availability</title>
 </head>
@@ -18,7 +21,10 @@
 <body>
   <div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand success" href="#">SG CARPARKS</a>
+      <a class="navbar-brand success" href="#">
+        <i class="fas fa-car-side"></i>
+        SG CARPARKS
+        </a>
     </nav>
   </div>
   <div class="container">
@@ -31,13 +37,13 @@
         <hr class="my-2">
         <nav class="navbar navbar-light" style="background-color:#e9ecef">
           <span>
-        <button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="GetDataButton">Get Carpark Availability</button>
-        <button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="UseYourLocationButton">My Location</button>
-        <button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="ReCenterButton">Re-Center Map</button>
+        <button class="btn btn-outline-info my-2 my-sm-0" type="submit" id="GetDataButton">Get Carpark Availability</button>
+        <button class="btn btn-outline-info my-2 my-sm-0" type="submit" id="UseYourLocationButton">My Location</button>
+        <button class="btn btn-outline-info my-2 my-sm-0" type="submit" id="ReCenterButton">Re-Center Map</button>
         </span>
           <form class="form-inline address-search-form-container home-page-search-form">
             <input class="form-control mr-sm-2 address-search-input-box home-page-search-box" id="SearchBox" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-dark my-2 my-sm-0" id="SearchButton" type="submit">Search</button>
+            <button class="btn btn-outline-info my-2 my-sm-0" id="SearchButton" type="submit">Search</button>
           </form>
 
         </nav>
