@@ -70,8 +70,7 @@
   <!-- Google Maps Clustering Javascript -->
   <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 
-  <!-- Personal Javascript-->
-  <script type="text/javascript" src="index.js"></script>
+  
 
   <script>
     // Google Maps Initialisation //
@@ -97,6 +96,7 @@
         }
         else if (Displayed == true) {
           GoogleMapRecenterAtSG();
+          CurrentPosition.setMap(null);
         }
       });
 
@@ -122,6 +122,9 @@
   </script>
   <!-- Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2bsXz1Zk50EQsbHR2-LuIbqKUioqNYAk&libraries=places&callback=initMap" async defer></script>
+  
+  <!-- Personal Javascript-->
+  <script type="text/javascript" src="index.js"></script>
 </body>
 
 </html>
