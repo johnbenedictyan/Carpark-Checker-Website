@@ -18,7 +18,7 @@
 <body>
   <div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">SG CARPARKS</a>
+      <a class="navbar-brand success" href="#">SG CARPARKS</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -35,8 +35,10 @@
   <div class="container">
     <div class="jumbotron jumbotron-fluid home-page-jumbotron">
       <div class="container">
-        <h1 class="display-4">SG CARPARKS</h1>
-        <p class="lead">Find an empty lot now!</p>
+        <h2 class="display-4">SG CARPARKS</h2>
+        <p class="lead main-page-paragraph">Find an empty lot now!</p>
+        <hr class="my-3">
+        <p class="main-page-paragraph main-page-note text-muted">To enable the search box/button, please first click on the Get Carpark Availability of My Location buttons!</p>
       </div>
     </div>
 
@@ -44,6 +46,7 @@
       <span>
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="GetDataButton">Get Carpark Availability</button>
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="UseYourLocationButton">My Location</button>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="ReCenterButton">Re-Center Map</button>
         </span>
       <form class="form-inline address-search-form-container home-page-search-form">
         <input class="form-control mr-sm-2 address-search-input-box home-page-search-box" id="SearchBox" type="search" placeholder="Search" aria-label="Search">
@@ -51,7 +54,7 @@
       </form>
 
     </nav>
-    <div class="row" id="map">
+    <div id="map">
 
     </div>
     <a id="downloadAnchorElem" style="display:none"></a>
@@ -70,7 +73,7 @@
   <!-- Google Maps Clustering Javascript -->
   <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 
-  
+
 
   <script>
     // Google Maps Initialisation //
@@ -90,9 +93,15 @@
     /* global $ */
     /* Displayed */
     $(function() {
+
+      $("#SearchBox").attr("disabled", true);
+      $("#SearchButton").attr("disabled", true);
+
       $("#GetDataButton").click(function() {
         if (Displayed == false) {
           DisplayCarparks();
+          $("#SearchBox").attr("disabled", false);
+          $("#SearchButton").attr("disabled", false);
         }
         else if (Displayed == true) {
           GoogleMapRecenterAtSG();
@@ -102,27 +111,31 @@
 
       $("#UseYourLocationButton").click(function() {
         DisplayCarparksOnLocation();
+        $("#SearchBox").attr("disabled", false);
+        $("#SearchButton").attr("disabled", false);
       });
 
       $("#SearchButton").click(function(event) {
         event.preventDefault();
-        let x = $("#SearchBox").val();
-        console.log(x);
-        console.log(typeof x);
-        $("#SearchBox").val("");
+        let SearchRequest = $("#SearchBox").val();
         let request = {
-          query: x,
+          query: SearchRequest,
           fields: ["name", "geometry"]
         };
-        console.log(request);
+        $("#SearchBox").val("");
         PlaceSearch(request);
       });
+
+      $("#ReCenterButton").click(function() {
+        GoogleMapRecenterAtSG();
+        CurrentPosition.setMap(null);
+      });
+
     });
-    
   </script>
   <!-- Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2bsXz1Zk50EQsbHR2-LuIbqKUioqNYAk&libraries=places&callback=initMap" async defer></script>
-  
+
   <!-- Personal Javascript-->
   <script type="text/javascript" src="index.js"></script>
 </body>

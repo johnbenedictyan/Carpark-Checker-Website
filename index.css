@@ -32,3 +32,9 @@
         width:80% !important;
     }
     
+    .main-page-paragraph{
+        margin-bottom: 0;
+    }
+    .main-page-note{
+        text-align: center;
+    }

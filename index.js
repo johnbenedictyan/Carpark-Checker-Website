@@ -136,6 +136,8 @@
     let markers = [];
     const SGCOORDINATEOBJECT = { lat: 1.3521, lng: 103.8198 };
     let PlaceSearchPosition;
+    let QueryRequest;
+
     // End of Global Variables //
 
     // Utility Functions Section //
@@ -312,48 +314,50 @@
 
     // Search Functionality //
     function PlaceSearch(request) {
+        function PlaceSearchExecutor(results) {
+            PlaceSearchPosition = results[0].geometry.location;
+            SearchPositionMaker(map, PlaceSearchPosition);
+            GoogleMapSetZoom(14);
+            GoogleMapSetPositionByCoordinateObject(PlaceSearchPosition);
+            // if (Displayed == false) {
+            //     DisplayCarparks();
+            // }
+            // else{
+            //     console.log("Asd");
+            // }
+        }
         service.findPlaceFromQuery(request, function(results, status) {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
                 if (PlaceSearchPosition == undefined) {
-                    PlaceSearchPosition = results[0].geometry.location;
-                    SearchPositionMaker(map, PlaceSearchPosition);
-                    GoogleMapSetPositionByCoordinateObject(PlaceSearchPosition);
-                    GoogleMapSetZoom(14);
-                    if (Displayed == false) {
-                        DisplayCarparks();
-                    }
+                    PlaceSearchExecutor(results);
                 }
                 else {
-                    PlaceSearchPosition.setMap(null);
-                    PlaceSearchPosition = results[0].geometry.location;
-                    SearchPositionMaker(map, PlaceSearchPosition);
-                    GoogleMapSetPositionByCoordinateObject(PlaceSearchPosition);
-                    GoogleMapSetZoom(14);
-                    if (Displayed == false) {
-                        DisplayCarparks();
-                    }
+                    SearchPosition.setMap(null);
+                    PlaceSearchExecutor(results);
                 }
             }
         });
-
     }
 
     function SearchPositionMaker(map, pos) {
-        if (SearchPosition == undefined) {
+        function SearchPositionMakerExecutor() {
             SearchPosition = new google.maps.Marker({
                 map: map,
                 animation: google.maps.Animation.DROP,
                 position: pos
             });
+        }
+        if (CurrentPosition != undefined) {
+            CurrentPosition.setMap(null);
+        }
+        if (SearchPosition == undefined) {
+            SearchPositionMakerExecutor();
         }
         else {
             SearchPosition.setMap(null);
-            SearchPosition = new google.maps.Marker({
-                map: map,
-                animation: google.maps.Animation.DROP,
-                position: pos
-            });
+            SearchPositionMakerExecutor();
         }
     }
+
     // End of Search Funcitonality //
     
