@@ -19,17 +19,6 @@
   <div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <a class="navbar-brand success" href="#">SG CARPARKS</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <!--<a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>-->
-          <!--<a class="nav-item nav-link" href="#">Features</a>-->
-          <!--<a class="nav-item nav-link" href="#">Pricing</a>-->
-          <!--<a class="nav-item nav-link disabled" href="#">Disabled</a>-->
-        </div>
-      </div>
     </nav>
   </div>
   <div class="container">
@@ -39,22 +28,24 @@
         <p class="lead main-page-paragraph">Find an empty lot now!</p>
         <hr class="my-3">
         <p class="main-page-paragraph main-page-note text-muted">To enable the search box/button, please first click on the Get Carpark Availability of My Location buttons!</p>
+        <hr class="my-2">
+        <nav class="navbar navbar-light" style="background-color:#e9ecef">
+          <span>
+        <button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="GetDataButton">Get Carpark Availability</button>
+        <button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="UseYourLocationButton">My Location</button>
+        <button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="ReCenterButton">Re-Center Map</button>
+        </span>
+          <form class="form-inline address-search-form-container home-page-search-form">
+            <input class="form-control mr-sm-2 address-search-input-box home-page-search-box" id="SearchBox" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-dark my-2 my-sm-0" id="SearchButton" type="submit">Search</button>
+          </form>
+
+        </nav>
       </div>
     </div>
 
-    <nav class="navbar navbar-dark bg-dark">
-      <span>
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="GetDataButton">Get Carpark Availability</button>
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="UseYourLocationButton">My Location</button>
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="ReCenterButton">Re-Center Map</button>
-        </span>
-      <form class="form-inline address-search-form-container home-page-search-form">
-        <input class="form-control mr-sm-2 address-search-input-box home-page-search-box" id="SearchBox" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" id="SearchButton" type="submit">Search</button>
-      </form>
 
-    </nav>
-    <div id="map">
+    <div id="map" class="border border-dark rounded mt-3">
 
     </div>
     <a id="downloadAnchorElem" style="display:none"></a>
@@ -69,75 +60,16 @@
   <!-- Axios JS -->
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
+  <!-- Personal Javascript-->
+  <script type="text/javascript" src="index.js"></script>
 
   <!-- Google Maps Clustering Javascript -->
   <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 
-
-
-  <script>
-    // Google Maps Initialisation //
-    var map;
-    let service = null;
-    /* global google */
-
-    function initMap() {
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: { lat: 1.3521, lng: 103.8198 },
-        zoom: 11
-      });
-
-      service = new google.maps.places.PlacesService(map);
-    }
-
-    /* global $ */
-    /* Displayed */
-    $(function() {
-
-      $("#SearchBox").attr("disabled", true);
-      $("#SearchButton").attr("disabled", true);
-
-      $("#GetDataButton").click(function() {
-        if (Displayed == false) {
-          DisplayCarparks();
-          $("#SearchBox").attr("disabled", false);
-          $("#SearchButton").attr("disabled", false);
-        }
-        else if (Displayed == true) {
-          GoogleMapRecenterAtSG();
-          CurrentPosition.setMap(null);
-        }
-      });
-
-      $("#UseYourLocationButton").click(function() {
-        DisplayCarparksOnLocation();
-        $("#SearchBox").attr("disabled", false);
-        $("#SearchButton").attr("disabled", false);
-      });
-
-      $("#SearchButton").click(function(event) {
-        event.preventDefault();
-        let SearchRequest = $("#SearchBox").val();
-        let request = {
-          query: SearchRequest,
-          fields: ["name", "geometry"]
-        };
-        $("#SearchBox").val("");
-        PlaceSearch(request);
-      });
-
-      $("#ReCenterButton").click(function() {
-        GoogleMapRecenterAtSG();
-        CurrentPosition.setMap(null);
-      });
-
-    });
-  </script>
   <!-- Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2bsXz1Zk50EQsbHR2-LuIbqKUioqNYAk&libraries=places&callback=initMap" async defer></script>
 
-  <!-- Personal Javascript-->
-  <script type="text/javascript" src="index.js"></script>
+
 </body>
 
 </html>

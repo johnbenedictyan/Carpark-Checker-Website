@@ -1,3 +1,60 @@
+     // Google Maps Initialisation //
+    var map;
+    let service = null;
+    /* global google */
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 1.3521, lng: 103.8198 },
+        zoom: 11
+      });
+
+      service = new google.maps.places.PlacesService(map);
+    }
+
+    /* global $ */
+    /* Displayed */
+    $(function() {
+
+      $("#SearchBox").attr("disabled", true);
+      $("#SearchButton").attr("disabled", true);
+
+      $("#GetDataButton").click(function() {
+        if (Displayed == false) {
+          DisplayCarparks();
+          $("#SearchBox").attr("disabled", false);
+          $("#SearchButton").attr("disabled", false);
+        }
+        else if (Displayed == true) {
+          GoogleMapRecenterAtSG();
+          CurrentPosition.setMap(null);
+        }
+      });
+
+      $("#UseYourLocationButton").click(function() {
+        DisplayCarparksOnLocation();
+        $("#SearchBox").attr("disabled", false);
+        $("#SearchButton").attr("disabled", false);
+      });
+
+      $("#SearchButton").click(function(event) {
+        event.preventDefault();
+        let SearchRequest = $("#SearchBox").val();
+        let request = {
+          query: SearchRequest,
+          fields: ["name", "geometry"]
+        };
+        $("#SearchBox").val("");
+        PlaceSearch(request);
+      });
+
+      $("#ReCenterButton").click(function() {
+        GoogleMapRecenterAtSG();
+        CurrentPosition.setMap(null);
+      });
+
+    });
+    
     /* global axios */
     //The CarparkCondition Function returns the condition of the carpark based on the ratio of its available lots to total lots.
     //The colour returned will be the colour of the carpark's marker on google maps.
@@ -123,7 +180,7 @@
     }
 
     async function RetrieveCarparkInfoJSON() {
-        const x = await axios.get("./Assets/carparkinfo.json").then(response => response.data).catch(error => error);
+        const x = await axios.get("./assets/carparkinfo.json").then(response => response.data).catch(error => error);
         return x;
     }
 
@@ -209,17 +266,17 @@
         }
         if (location.lat != undefined & location.lng != undefined) {
             if (condition == "red") {
-                let IconLocation = "./Assets/final-red-circle.png";
+                let IconLocation = "./assets/final-red-circle.png";
                 let x = AddMarkerExecutor(location, map, condition, label, CarparkContent, IconLocation);
                 return x;
             }
             else if (condition == "yellow") {
-                let IconLocation = "./Assets/final-yellow-circle.png";
+                let IconLocation = "./assets/final-yellow-circle.png";
                 let x = AddMarkerExecutor(location, map, condition, label, CarparkContent, IconLocation);
                 return x;
             }
             else if (condition == "green") {
-                let IconLocation = "./Assets/final-green-circle.png";
+                let IconLocation = "./assets/final-green-circle.png";
                 let x = AddMarkerExecutor(location, map, condition, label, CarparkContent, IconLocation);
                 return x;
             }

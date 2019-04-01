@@ -2,7 +2,7 @@
        * element that contains the map. */
 
     #map {
-        height: 65vh;
+        height: 64vh;
     }
 
     /* Optional: Makes the sample page fill the window. */
@@ -12,7 +12,7 @@
         height: 100%;
         margin: 0;
         padding: 0;
-        background-image: url("./Assets/background-image.jpg");
+        background-image: url("./assets/background-image.jpg");
         background-repeat:no-repeat;
         background-attachment: fixed;
         background-position: center;
@@ -20,8 +20,8 @@
     }
     
     .home-page-jumbotron{
-        padding: 2rem 1rem;
-        margin-bottom: 1rem;
+        padding: 1.5rem 2rem 1rem 2rem;
+        margin-bottom: 0;
     }
     
     .home-page-search-form{
