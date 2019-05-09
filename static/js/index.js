@@ -180,7 +180,7 @@
     }
 
     async function RetrieveCarparkInfoJSON() {
-        const x = await axios.get("./assets/carparkinfo.json").then(response => response.data).catch(error => error);
+        const x = await axios.get("/static/json/carparkinfo.json").then(response => response.data).catch(error => error);
         return x;
     }
 
@@ -266,17 +266,17 @@
         }
         if (location.lat != undefined & location.lng != undefined) {
             if (condition == "red") {
-                let IconLocation = "./assets/final-red-circle.png";
+                let IconLocation = "static/photos/final-red-circle.png";
                 let x = AddMarkerExecutor(location, map, condition, label, CarparkContent, IconLocation);
                 return x;
             }
             else if (condition == "yellow") {
-                let IconLocation = "./assets/final-yellow-circle.png";
+                let IconLocation = "static/photos/final-yellow-circle.png";
                 let x = AddMarkerExecutor(location, map, condition, label, CarparkContent, IconLocation);
                 return x;
             }
             else if (condition == "green") {
-                let IconLocation = "./assets/final-green-circle.png";
+                let IconLocation = "static/photos/final-green-circle.png";
                 let x = AddMarkerExecutor(location, map, condition, label, CarparkContent, IconLocation);
                 return x;
             }

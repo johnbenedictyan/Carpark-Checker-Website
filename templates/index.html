@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
   <!-- Personal CSS -->
-  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}" type="text/css" />
   
   <!-- Font Awesome CSS -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
@@ -18,7 +18,7 @@
   <title>Carpark Availability</title>
 </head>
 
-<body>
+<body style="background-image: url('{{ url_for('static', filename='photos/background-image.jpg') }}')">
   <div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <a class="navbar-brand success" href="#">
@@ -67,7 +67,7 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
   <!-- Personal Javascript-->
-  <script type="text/javascript" src="index.js"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}"></script>
 
   <!-- Google Maps Clustering Javascript -->
   <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
