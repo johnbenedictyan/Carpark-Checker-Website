@@ -1,11 +1,12 @@
 from flask import Flask, render_template,request,jsonify
 import os, json
 from SVY21 import SVY21 as coordinate_convertor_class
-
+#Comment this import env out when deploying to heroku
+import env
 app = Flask(__name__)
 @app.route("/")
 def init():
-    return render_template("index.html")
+    return render_template("index.html",GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY"))
 
 @app.route("/coordinate-convertor-function",methods=["GET","POST"])
 def cc():
