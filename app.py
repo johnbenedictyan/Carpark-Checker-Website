@@ -2,7 +2,7 @@ from flask import Flask, render_template,request,jsonify
 import os, json
 from SVY21 import SVY21 as coordinate_convertor_class
 #Comment this import env out when deploying to heroku
-import env
+# import env
 app = Flask(__name__)
 @app.route("/")
 def init():
