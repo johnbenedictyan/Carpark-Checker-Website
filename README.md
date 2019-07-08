@@ -28,6 +28,11 @@ List of User Stories
 ## Testing
 Manual Testing:
 
+Automated Testing (Jasmine):
+- If you would like to see the results of the automated testing, you can preview in the sepc/javascripts/fixtures/index-fixture.html file.
+
+Automated testing was done on these functions:
+
 Interesting Bugs/Problems:
 - The converting of the proprietary coordinate system that the Singapore government was using in their datasets via multiple external ajax call was taking too long. Therefore I pass the entire coordinate dataset as a JSON object to a local route in flask via AJAX and returned the convertered coordinates as the AJAX response to save load time.
 

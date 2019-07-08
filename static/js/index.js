@@ -25,7 +25,18 @@
 
      //  This function checks to see if a given value is present inside a given array
      function isInArray(array, value) {
-         return array.indexOf(value) > -1;
+         if (Array.isArray(array) == false && (typeof(value) == "undefined")) {
+             return "The array input is not an array and the value input is undefined";
+         }
+         else if (Array.isArray(array) == false) {
+             return "The array input is not an array";
+         }
+         else if (typeof(value) == "undefined") {
+             return "The value input is undefined";
+         }
+         else {
+             return array.indexOf(value) > -1;
+         }
      }
 
      function resolveAfterXSeconds(time_to_wait) {
@@ -40,7 +51,7 @@
              let time_to_wait_sec = time_to_wait * 1000;
              return new Promise(resolve => {
                  setTimeout(() => {
-                     resolve('resolved');
+                     resolve('It has been resolved');
                  }, time_to_wait_sec);
              });
          }
@@ -124,8 +135,8 @@
 
          $("#UseYourLocationButton").click(function() {
              DisplayCarparksOnLocation();
-             $("#SearchBox").attr("disabled", false);
-             $("#SearchButton").attr("disabled", false);
+             //  $("#SearchBox").attr("disabled", false);
+             //  $("#SearchButton").attr("disabled", false);
          });
 
          $("#SearchButton").click(function(event) {
@@ -275,8 +286,8 @@
              FinalDataset[z].Condition = condition;
          }
 
-         //  This is a new Final Data Set named aptly Final Data Set V2 becomes I could not get the asynchronous nature of the final data set to work.
-         //  So this for loop checks to see if the x or y coordinates are undefined and those do not get added to the new final data set.
+         //  This is a new Final Data Set named aptly Final Data Set V2 because I could not get the asynchronous nature of the final data set to work.
+         //  So this for loop checks to see if the x or y coordinates are undefined and if so those are not added to the new final data set.
          let FinalDatasetV2 = [];
          for (let q = 0; q < FDL; q++) {
              if (FinalDataset[q].X_Coordinates !== undefined || FinalDataset[q].Y_Coordinates !== undefined) {
